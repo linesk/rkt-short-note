@@ -63,7 +63,7 @@ def handle_message(event):
     if event.message.text.startswith('>บันทึก'):
         from datetime import datetime
         item = event.message.text.split('$$')
-        if item.length == 3 and item[0].strip() =='>บันทึก':
+        if len(item) == 3 and item[0].strip() =='>บันทึก':
             shortnote = {
                 'topic': item[1].strip(),
                 'content': item[2].strip(),
