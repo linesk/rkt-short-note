@@ -45,7 +45,6 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
     # handle webhook body
     try:
         handler.handle(body, signature)
@@ -64,7 +63,6 @@ def handle_message(event):
     if event.message.text.startswith('>บันทึก'):
         message = event.message.text.replace('>บันทึก ', '')
         from datetime import datetime
-        import re
         item = event.message.text.split('--')
         shortnote = {
             'topic': item[1],
@@ -87,6 +85,8 @@ id: {str(shortnote_id)}
 เนื้อหา: {shortnote['content']}
 แก้ไข้ล่าสุดเมื่อ: {shortnote['date_modified'].strftime("%d %b %Y")}
 '''
+        else:
+            message = 'ไม่มีหัวข้อที่ต้องการค้นหา'
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
 
