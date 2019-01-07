@@ -63,7 +63,7 @@ def handle_message(event):
     if event.message.text.startswith('>บันทึก'):
         from datetime import datetime
         item = event.message.text.split('$$')
-        if len(item) == 3 and item[0].strip() =='>บันทึก':
+        if len(item) == 3 and item[0].strip() == '>บันทึก':
             shortnote = {
                 'topic': item[1].strip(),
                 'content': item[2].strip(),
@@ -83,8 +83,8 @@ id: {str(shortnote_id)}
     else:
         shortnote = shortnotes.find_one({'topic': event.message.text})
         if shortnote:
-            message = f'''หัวข้อ: {shortnote['topic']}
-เนื้อหา: {shortnote['content']}
+            message = f'''{shortnote['topic']}
+{shortnote['content']}
 แก้ไข้ล่าสุดเมื่อ: {shortnote['date_modified'].strftime("%d %b %Y")}
 '''
         else:
