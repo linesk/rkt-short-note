@@ -61,21 +61,23 @@ shortnotes = mongo.db.shortnotes
 def handle_message(event):
 
     if event.message.text.startswith('>บันทึก'):
-        message = event.message.text.replace('>บันทึก ', '')
         from datetime import datetime
         item = event.message.text.split('$$')
-        shortnote = {
-            'topic': item[1],
-            'content': item[2],
-            'date_modified': datetime.now()
-        }
-        shortnote_id = shortnotes.insert_one(shortnote).inserted_id
-        message = f'''ทำการบันทึกแล้ว
-หัวข้อ: {shortnote['topic'].strip()}
-เนื้อหา: {shortnote['content'].strip()}
+        if item.length == 3 and item[0].strip() =='>บันทึก':
+            shortnote = {
+                'topic': item[1].strip(),
+                'content': item[2].strip(),
+                'date_modified': datetime.now()
+            }
+            shortnote_id = shortnotes.insert_one(shortnote).inserted_id
+            message = f'''ทำการบันทึกแล้ว
+หัวข้อ: {shortnote['topic']}
+เนื้อหา: {shortnote['content']}
 แก้ไข้ล่าสุดเมื่อ: {shortnote['date_modified'].strftime("%d %b %Y")}
 id: {str(shortnote_id)}
 '''
+        else:
+            message = 'รูปแบบไม่ถูกต้อง ">บันทึก$$(หัวข้อ)$$(เนื้อหา)"'
     elif event.message.text.startswith('>สะท้อน'):
         message = event.message.text.replace('>สะท้อน', '')
     else:
