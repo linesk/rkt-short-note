@@ -33,6 +33,10 @@ app.config["MONGO_URI"] = MONGODB_URI
 mongo = PyMongo(app)
 
 
+@app.route("/")
+def home():
+    return "Hello world"
+
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -40,7 +44,6 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
