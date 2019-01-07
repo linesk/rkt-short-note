@@ -31,11 +31,8 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 app.config["MONGO_URI"] = MONGODB_URI
 mongo = PyMongo(app)
+shortnote_collection = mongo.db.shortnote_collection
 
-
-@app.route("/")
-def home():
-    return "Hello world"
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -56,8 +53,15 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(event.reply_token,
-                               TextSendMessage(text=event.message.text))
+    if event.message.text.startswith('>บันทึก '):
+        message = event.message.text.replace('>บันทึก ', 'บันทึก')
+        line_bot_api.reply_message(event.reply_token,
+                                   TextSendMessage(text=message))
+
+    if event.message.text.startswith('>สะท้อน '):
+        message = event.message.text.replace('>สะท้อน ', '')
+        line_bot_api.reply_message(event.reply_token,
+                                   TextSendMessage(text=message))
 
 
 if __name__ == "__main__":
