@@ -69,7 +69,7 @@ def handle_message(event):
         หัวข้อ: {shortnote['topic']}
         เนื้อหา: {shortnote['content']}
         แก้ไข้ล่าสุดเมื่อ: {shortnote['date_modified']}
-        id: {shortnote_id.str}
+        id: {str(shortnote_id)}
         '''
 
     elif event.message.text.startswith('>สะท้อน'):
