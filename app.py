@@ -33,6 +33,11 @@ app.config["MONGO_URI"] = MONGODB_URI
 mongo = PyMongo(app)
 
 
+@app.route("/")
+def home():
+    return 'hello world'
+
+
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -60,8 +65,8 @@ def handle_message(event):
         from datetime import datetime
         import re
         shortnote = {
-            'topic': re.search('^หัวข้อ: .*', event.message.text),
-            'content': re.search('^เนื้อหา: .*', event.message.text),
+            'topic': re.search('หัวข้อ: .*', event.message.text),
+            'content': re.search('เนื้อหา: .*', event.message.text),
             'date_modified': datetime.now()
         }
         shortnote_id = shortnotes.insert_one(shortnote).inserted_id
