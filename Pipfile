@@ -4,10 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
+yapf = "*"
 
 [packages]
 flask = "*"
 gunicorn = "*"
+flask-pymongo = "*"
+line-bot-sdk = "*"
 
 [requires]
 python_version = "3.7"
