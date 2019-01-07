@@ -55,7 +55,7 @@ shortnotes = mongo.db.shortnotes
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if event.message.text.startswith('>บันทึก '):
+    if event.message.text.startswith('>บันทึก'):
         message = event.message.text.replace('>บันทึก ', 'ทำการบันทึกแล้ว')
         from datetime import datetime
         import re
@@ -72,8 +72,10 @@ def handle_message(event):
         id: {shortnote_id.str}
         '''
 
-    elif event.message.text.startswith('>สะท้อน '):
-        message = event.message.text.replace('>สะท้อน ', '')
+    elif event.message.text.startswith('>สะท้อน'):
+        message = event.message.text.replace('>สะท้อน', '')
+    else:
+        message = 'ลองใหม่นะครับคำ สั่งได้แก่ >บันทึก, >สะท้อน'
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
 
