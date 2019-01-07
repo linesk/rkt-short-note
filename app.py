@@ -1,6 +1,8 @@
 import os
 import sys
 from flask import Flask, request, abort
+from flask_pymongo import PyMongo
+
 from linebot import (LineBotApi, WebhookHandler)
 from linebot.exceptions import (InvalidSignatureError)
 from linebot.models import (
@@ -8,9 +10,6 @@ from linebot.models import (
     TextMessage,
     TextSendMessage,
 )
-
-from flask import Flask, request, abort
-from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 
@@ -34,18 +33,14 @@ app.config["MONGO_URI"] = MONGODB_URI
 mongo = PyMongo(app)
 
 
-@app.route("/")
-def hello():
-    return "Hello World!"
-
-
-@app.route("/webhook", methods=['POST', 'GET'])
-def webhook(request):
+@app.route("/callback", methods=['POST'])
+def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
     # get request body as text
     body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
@@ -57,7 +52,7 @@ def webhook(request):
 
 
 @handler.add(MessageEvent, message=TextMessage)
-def message_text(event):
+def handle_message(event):
     line_bot_api.reply_message(event.reply_token,
                                TextSendMessage(text=event.message.text))
 
