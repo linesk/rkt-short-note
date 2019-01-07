@@ -31,7 +31,6 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 app.config["MONGO_URI"] = MONGODB_URI
 mongo = PyMongo(app)
-shortnote_collection = mongo.db.shortnote_collection
 
 
 @app.route("/callback", methods=['POST'])
@@ -51,17 +50,32 @@ def callback():
     return 'OK'
 
 
+shortnotes = mongo.db.shortnotes
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     if event.message.text.startswith('>บันทึก '):
-        message = event.message.text.replace('>บันทึก ', 'บันทึก')
-        line_bot_api.reply_message(event.reply_token,
-                                   TextSendMessage(text=message))
+        message = event.message.text.replace('>บันทึก ', 'ทำการบันทึกแล้ว')
+        from datetime import datetime
+        import re
+        shortnote = {
+            'topic': re.search('^หัวข้อ: .*', event.message.text),
+            'content': re.search('^เนื้อหา: .*', event.message.text),
+            'date_modified': datetime.now(tz='UTC+07:00')
+        }
+        shortnote_id = shortnotes.insert_one(shortnote).inserted_id
+        message = f'''ทำการบันทึกแล้ว
+        หัวข้อ: {shortnote['topic']}
+        เนื้อหา: {shortnote['content']}
+        แก้ไข้ล่าสุดเมื่อ: {shortnote['date_modified']}
+        id: {shortnote_id.str}
+        '''
 
-    if event.message.text.startswith('>สะท้อน '):
+    elif event.message.text.startswith('>สะท้อน '):
         message = event.message.text.replace('>สะท้อน ', '')
-        line_bot_api.reply_message(event.reply_token,
-                                   TextSendMessage(text=message))
+
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
 
 
 if __name__ == "__main__":
