@@ -65,7 +65,7 @@ def handle_message(event):
         item = event.message.text.split('$$')
         if len(item) == 3 and item[0].strip() == '>บันทึก':
             shortnote = {
-                'topic': item[1].strip(),
+                'topic': item[1].strip().capitalize(),
                 'content': item[2].strip(),
                 'date_modified': datetime.now()
             }
@@ -78,10 +78,13 @@ id: {str(shortnote_id)}
 '''
         else:
             message = 'รูปแบบไม่ถูกต้อง ">บันทึก$$(หัวข้อ)$$(เนื้อหา)"'
-    elif event.message.text.startswith('>สะท้อน'):
-        message = event.message.text.replace('>สะท้อน', '')
+
+    elif event.message.text.startswith('>ช่วยเหลือ'):
+        message = 'เขียนโดย ratchapoom MED43, ค้นหาด้วยคำคีเวิร์ด, เพิ่มด้วย >บันทึก$$(หัวข้อ)$$(เนื้อหา)'
     else:
-        shortnote = shortnotes.find_one({'topic': event.message.text})
+        shortnote = shortnotes.find_one({
+            'topic': event.message.text.capitalize()
+        })
         if shortnote:
             message = f'''{shortnote['topic']}
 {shortnote['content']}
