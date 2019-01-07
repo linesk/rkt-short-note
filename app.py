@@ -10,12 +10,17 @@ from linebot.models import (
 )
 
 from flask import Flask, request, abort
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
+MONGODB_URI = os.getenv('MONGODB_URI', None)
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+if MONGODB_URI is None:
+    print('Specify MONGODB_URI as environment variable.')
+    sys.exit(1)
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
     sys.exit(1)
@@ -25,6 +30,8 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
+app.config["MONGO_URI"] = MONGODB_URI
+mongo = PyMongo(app)
 
 
 @app.route("/")
@@ -33,7 +40,7 @@ def hello():
 
 
 @app.route("/webhook", methods=['POST', 'GET'])
-def webhook():
+def webhook(request):
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
