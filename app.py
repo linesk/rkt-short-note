@@ -62,7 +62,7 @@ def handle_message(event):
         shortnote = {
             'topic': re.search('^หัวข้อ: .*', event.message.text),
             'content': re.search('^เนื้อหา: .*', event.message.text),
-            'date_modified': datetime.now(tz='UTC+07:00')
+            'date_modified': datetime.now()
         }
         shortnote_id = shortnotes.insert_one(shortnote).inserted_id
         message = f'''ทำการบันทึกแล้ว
