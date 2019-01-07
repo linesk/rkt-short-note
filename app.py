@@ -61,19 +61,20 @@ shortnotes = mongo.db.shortnotes
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     if event.message.text.startswith('>บันทึก'):
-        message = event.message.text.replace('>บันทึก ', 'ทำการบันทึกแล้ว')
+        message = event.message.text.replace('>บันทึก ', '')
         from datetime import datetime
         import re
+        item = event.message.text.split('--')
         shortnote = {
-            'topic': re.search('หัวข้อ: .*', event.message.text),
-            'content': re.search('เนื้อหา: .*', event.message.text),
+            'topic': item[1],
+            'content': item[2],
             'date_modified': datetime.now()
         }
         shortnote_id = shortnotes.insert_one(shortnote).inserted_id
         message = f'''ทำการบันทึกแล้ว
         หัวข้อ: {shortnote['topic']}
         เนื้อหา: {shortnote['content']}
-        แก้ไข้ล่าสุดเมื่อ: {shortnote['date_modified']}
+        แก้ไข้ล่าสุดเมื่อ: {shortnote['date_modified'].strftime("%x")}
         id: {str(shortnote_id)}
         '''
 
