@@ -12,8 +12,8 @@ def hello():
     return "Hello World!"
 
 
-@app.route("/webhook", methods=['POST'])
-def webhook(request):
+@app.route("/webhook", methods=['POST','GET'])
+def webhook():
     if request.method == 'POST':
         return 'OK'
 
